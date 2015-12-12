@@ -38,6 +38,7 @@ print_words() and print_top().
 """
 
 import sys
+from collections import Counter
 
 
 # +++your code here+++
@@ -46,6 +47,27 @@ import sys
 # and builds and returns a word/count dict for it.
 # Then print_words() and print_top() can just call the utility function.
 
+def file_word_counter(filename):
+    with open(filename) as f:
+        text = f.read()
+    words = text.split()
+    return Counter(word.lower() for word in words)
+
+
+def print_words(filename):
+    c = file_word_counter(filename)
+    sorted_words = list(c.keys())
+    sorted_words.sort()
+    for word in sorted_words:
+        print(word, c[word])
+
+
+def print_top(filename):
+    c = file_word_counter(filename)
+    top_words = list(c.items())
+    top_words.sort(key=lambda x: (-x[-1], x[0]))
+    for word, n in top_words:
+        print(word, n)
 ###
 
 # This basic command line argument parsing code is provided and
