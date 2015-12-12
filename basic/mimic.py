@@ -41,20 +41,33 @@ columns, so the output looks better.
 
 """
 
+from collections import defaultdict
 import random
 import sys
 
 
 def mimic_dict(filename):
   """Returns mimic dict mapping each word to list of words which follow it."""
-  # +++your code here+++
-  return
+  with open(filename) as f:
+    file_text = f.read()
+  words = file_text.split()
+  d = defaultdict(list)
+  d[''].append(words[0])
+  words_tail = iter(words)
+  next(words_tail)
+  for word, next_word in zip(words, words_tail):
+    d[word].append(next_word)
+  return d
 
 
 def print_mimic(mimic_dict, word):
   """Given mimic dict and start word, prints 200 random words."""
-  # +++your code here+++
-  return
+  for _ in range(200):
+    if word in mimic_dict:
+      word = random.choice(mimic_dict[word])
+    else:
+      word = random.choice(mimic_dict[''])
+    print(word, end=' ')
 
 
 # Provided main(), calls mimic_dict() and mimic()
