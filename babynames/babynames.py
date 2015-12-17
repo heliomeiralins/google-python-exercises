@@ -34,6 +34,12 @@ Suggested milestones for incremental development:
  -Fix main() to use the extract_names list
 """
 
+def _get_names_with_rank(iterable):
+    it = iter(iterable)
+    while True:
+        ranked_pair = next(it).groups()
+        yield '%s %s' % (ranked_pair[1], ranked_pair[0])
+        yield '%s %s' % (ranked_pair[2], ranked_pair[0])
 
 def extract_names(filename):
     """
@@ -41,8 +47,14 @@ def extract_names(filename):
     followed by the name-rank strings in alphabetical order.
     ['2006', 'Aaliyah 91', Aaron 57', 'Abagail 895', ' ...]
     """
-    # +++your code here+++
-    return
+    with open(filename, 'r') as f:
+        html = f.read()
+    year = re.search('Popularity in (\d{4})', html).groups(0)[0]
+    name_info = re.finditer(r'<tr align="right"><td>(\d+)</td><td>(\w+)</td><td>(\w+)</td>', html)
+    ranked_names_by_year = [name for name in _get_names_with_rank(name_info)]
+    ranked_names_by_year.append(year)
+    ranked_names_by_year.sort()
+    return ranked_names_by_year
 
 
 def main():
@@ -64,6 +76,13 @@ def main():
         # +++your code here+++
         # For each filename, get the names, then either print the text output
         # or write it to a summary file
+    for filename in args:
+        names = '\n'.join(extract_names(filename))
+        if summary:
+            with open('%s.summary' % filename, 'w') as f:
+                f.write(names)
+        else:
+            print(names)
 
 
 if __name__ == '__main__':
